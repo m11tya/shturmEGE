@@ -1,58 +1,97 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <title>Мой сайт на GitHub Pages</title>
-  
   <style>
-    body {
-      /* Убираем отступы по умолчанию */
+    /* Применяем стили к html и body, 
+      чтобы фон был на весь экран без отступов
+    */
+    html, body {
+      width: 100%;
+      height: 100%;
       margin: 0;
       padding: 0;
+      overflow: hidden; /* Прячем прокрутку, если фон "вылезет" */
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
-    /* Тот самый анимированный фон */
-    .light-rays {
-      position: fixed; /* Фон фиксирован и не прокручивается */
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: #222 url(https://react-bits.com/images/light-rays.png) repeat top center;
-      background-size: 150%;
+    body {
+      /* САМОЕ ГЛАВНОЕ: ДВОЙНОЙ ФОН
+        Мы накладываем два фона друг на друга:
+        1. radial-gradient: Это пятно, которое следует за мышкой.
+           Его позиция (var(--x) и var(--y)) будет меняться с помощью JavaScript.
+        2. url(...): Это та самая текстура лучей из прошлого примера.
+      */
+      background-image:
+        radial-gradient(
+          circle at var(--x, 50%) var(--y, 50%), /* Позиция по умолчанию - центр */
+          rgba(255, 255, 255, 0.1) 0%, /* Свет в центре */
+          rgba(255, 255, 255, 0) 30%  /* Быстро угасает */
+        ),
+        url(https://react-bits.com/images/light-rays.png); /* Текстура лучей */
+      
+      background-color: #1a1a1a; /* Темный фон, как на React Bits */
+      
+      /* Задаем размеры и повторение для КАЖДОГО фона */
+      background-size: auto, 150%; /* Градиент-авто, текстура-150% */
+      background-repeat: no-repeat, repeat; /* Градиент-не повторять, текстуру-повторять */
+
+      /* Анимация для второго фона (текстуры) */
       animation: light-rays-anim 60s linear infinite;
-      z-index: -1; /* !!! Это важно: фон уходит на задний план */
     }
 
-    /* Анимация для фона */
+    /* Анимация для текстуры (второй фон) */
     @keyframes light-rays-anim {
       0% {
-        background-position: 0% 0%;
+        /* Двигаем только второй фон (текстуру) */
+        background-position: center center, 0% 0%;
       }
       100% {
-        background-position: 100% 100%;
+        /* Двигаем только второй фон (текстуру) */
+        background-position: center center, 100% 100%;
       }
     }
 
     /* Стили для вашего контента */
     .content {
-      position: relative; /* Нужно для z-index */
-      z-index: 1; /* Контент будет на переднем плане (1 > -1) */
-      color: white; /* Делаем текст белым, чтобы его было видно */
-      padding: 40px; /* Добавляем отступы, чтобы текст не прилипал к краям */
+      position: relative;
+      z-index: 1;
+      padding: 40px;
+      text-align: center; /* Отцентрируем текст */
+      
+      /* P.S. Я заметил, что у вас текст стал бирюзовым.
+        Чтобы он был виден на темном фоне, делаем его белым
+        и добавляем свечение, похожее на ваш скриншот.
+      */
+      color: white; 
+    }
+
+    .content h1 {
+      color: #00ffff; /* Бирюзовый цвет (cyan) */
+      /* Добавляем эффект свечения */
+      text-shadow: 0 0 8px rgba(0, 255, 255, 0.8), 0 0 12px rgba(0, 255, 255, 0.5);
     }
   </style>
-
 </head>
 <body>
   
-  <div class="light-rays"></div>
-
   <div class="content">
     <h1>Привет, GitHub Pages!</h1>
     <p>Это мой первый сайт. Здесь я смогу добавлять всё, что захочу: текст, картинки, скрипты, анимации.</p>
   </div>
+
+  <script>
+    document.addEventListener('mousemove', (e) => {
+      // e.clientX - позиция мыши по X
+      // e.clientY - позиция мыши по Y
+      
+      // Мы обновляем CSS-переменные --x и --y,
+      // которые используются в background-image
+      document.documentElement.style.setProperty('--x', e.clientX + 'px');
+      document.documentElement.style.setProperty('--y', e.clientY + 'px');
+    });
+  </script>
 
 </body>
 </html>
